@@ -3,7 +3,7 @@
     "name": "OppenheimerOmega",
     "version": "1.0",
     "description": "Boost your productivity with Oppenheimer-inspired techniques",
-    "permissions": ["storage", "tabs", "blocking", "webRequest"],
+    "permissions": ["storage", "tabs", "webRequest", "webRequestBlocking", "<all_urls>"],
     "action": {
       "default_popup": "popup.html"
     },
