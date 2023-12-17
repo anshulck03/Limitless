@@ -1,33 +1,30 @@
-let countdown;
 const timerDisplay = document.querySelector('#timer');
 const startButton = document.querySelector('#startButton');
 const resetButton = document.querySelector('#resetButton');
 
-function timer(seconds) {
-  clearInterval(countdown);
-  const now = Date.now();
-  const then = now + seconds * 1000;
-  displayTimeLeft(seconds);
+startButton.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ action: 'startTimer', duration: 1500 });
+});
 
-  countdown = setInterval(() => {
-    const secondsLeft = Math.round((then - Date.now()) / 1000);
-    if (secondsLeft <= 0) {
-      clearInterval(countdown);
-      return;
-    }
-    displayTimeLeft(secondsLeft);
-  }, 1000);
-}
+resetButton.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ action: 'resetTimer' });
+});
 
-function displayTimeLeft(seconds) {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'updateTimer') {
+    updateDisplay(message.timeLeft);
+  } else if (message.action === 'resetTimer') {
+    updateDisplay(1500); // Reset to 25 minutes
+  }
+});
+
+function updateDisplay(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  const display = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  timerDisplay.textContent = display;
+  timerDisplay.textContent = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 }
 
-startButton.addEventListener('click', () => timer(1500));
-resetButton.addEventListener('click', () => {
-  clearInterval(countdown);
-  timerDisplay.textContent = '25:00';
+// On popup open, request current timer state
+document.addEventListener('DOMContentLoaded', () => {
+  chrome.runtime.sendMessage({ action: 'getTimerState' });
 });

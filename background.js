@@ -1,33 +1,37 @@
-// This function updates the rules for blocking websites.
-function updateBlockedSites(blockedSites) {
-    // First, we clear all existing rules.
-    chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: [1] // You can specify more IDs if you have more rules.
-    }, () => {
-      // After removing the rules, we add new rules based on the blockedSites array.
-      const newRules = blockedSites.map((site, index) => ({
-        id: index + 1, // Rule IDs should be unique.
-        priority: 1,
-        action: {
-          type: 'block'
-        },
-        condition: {
-          urlFilter: `*://*.${site}/*`, // This will match all subdomains and paths for the site.
-          resourceTypes: ['main_frame']
-        }
-      }));
-  
-      // Add new rules to block the specified websites.
-      chrome.declarativeNetRequest.updateDynamicRules({
-        addRules: newRules
-      });
-    });
-  }
-  
-  // Listen for messages from popup.js
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'updateBlockedList') {
-      updateBlockedSites(message.sites);
+let countdown;
+let timerDuration = 1500; // 25 minutes
+let endTime;
+
+function startTimer(duration) {
+  timerDuration = duration;
+  endTime = Date.now() + timerDuration * 1000;
+  countdown = setInterval(() => {
+    const timeLeft = Math.round((endTime - Date.now()) / 1000);
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      countdown = null;
     }
-  });
-  
+    chrome.runtime.sendMessage({ action: 'updateTimer', timeLeft });
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(countdown);
+  countdown = null;
+  chrome.runtime.sendMessage({ action: 'resetTimer' });
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'startTimer') {
+    startTimer(message.duration);
+  } else if (message.action === 'resetTimer') {
+    resetTimer();
+  }
+  if (message.action === 'getTimerState') {
+    sendResponse(getTimerState());
+  }
+});
+
+function getTimerState() {
+  return { running: countdown !== null, timeLeft: Math.round((endTime - Date.now()) / 1000) };
+}
