@@ -3,10 +3,15 @@
     "name": "OppenheimerOmega",
     "version": "1.0",
     "description": "Boost your productivity with Oppenheimer-inspired techniques",
-    "permissions": ["storage", "activeTab"],
+    "permissions": ["storage", "tabs", "blocking", "webRequest"],
     "action": {
       "default_popup": "popup.html"
-      
-    }
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "host_permissions": [
+      "*://*/*"
+    ]
   }
   
