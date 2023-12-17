@@ -44,6 +44,18 @@ function displayTimeLeft(seconds) {
   document.title = display;
 }
 
+function sendBlockedSites(sites) {
+    chrome.runtime.sendMessage({ action: 'updateBlockedList', sites });
+  }
+  
+  // When the user clicks the 'Start' button, send the blocked sites
+  startButton.addEventListener('click', () => {
+    const sitesToBlock = blockedSitesInput.value.split('\n').map(s => s.trim()).filter(Boolean);
+    sendBlockedSites(sitesToBlock);
+    timer(1500); // Start the timer for 25 minutes
+  });
+  
+
 startButton.addEventListener('click', () => {
   timer(1500);
   const sites = blockedSitesInput.value.split('\n').map(s => s.trim()).filter(Boolean);

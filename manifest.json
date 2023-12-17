@@ -3,15 +3,22 @@
     "name": "OppenheimerOmega",
     "version": "1.0",
     "description": "Boost your productivity with Oppenheimer-inspired techniques",
-    "permissions": ["storage", "tabs", "webRequest", "webRequestBlocking", "<all_urls>"],
+    "permissions": ["storage", "tabs", "declarativeNetRequest"],
+    "host_permissions": [
+      "*://*/*"
+    ],
     "action": {
       "default_popup": "popup.html"
     },
     "background": {
       "service_worker": "background.js"
     },
-    "host_permissions": [
-      "*://*/*"
-    ]
+    "declarativeNetRequest": {
+      "rule_resources": [{
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }]
+    }
   }
   
