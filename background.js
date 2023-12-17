@@ -2,7 +2,6 @@ let countdown;
 let timerType = 'work'; // can be 'work', 'shortBreak', or 'longBreak'
 let cycleCount = 0;
 let endTime;
-let blockedSites = [];
 
 function startTimer(duration, type) {
   timerType = type;
@@ -18,7 +17,9 @@ function startTimer(duration, type) {
         action: timerType === 'work' ? 'pomodoroComplete' : 'breakComplete',
         cycleCount
       });
-      updateBlockedSites([]); // Unblock sites when timer ends
+      if (timerType !== 'work') {
+        updateBlockedSites([]);
+      }
     }
     chrome.runtime.sendMessage({ action: 'updateTimer', timeLeft });
   }, 1000);
@@ -28,11 +29,10 @@ function resetTimer() {
   clearInterval(countdown);
   countdown = null;
   chrome.runtime.sendMessage({ action: 'resetTimer' });
-  updateBlockedSites([]); // Unblock sites on reset
+  updateBlockedSites([]);
 }
 
 function updateBlockedSites(sites) {
-  blockedSites = sites;
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: new Array(100).fill().map((_, i) => i + 1),
     addRules: sites.map((site, index) => ({
@@ -50,8 +50,14 @@ function updateBlockedSites(sites) {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'startTimer') {
     startTimer(message.duration, message.type);
-    if (timerType === 'work') {
-      updateBlockedSites(blockedSites); // Block sites when work timer starts
+    if (message.type === 'work') {
+      chrome.storage.local.get(['blockedSites'], function(result) {
+        if (result.blockedSites) {
+          updateBlockedSites(result.blockedSites);
+        }
+      });
+    } else {
+      updateBlockedSites([]);
     }
   } else if (message.action === 'resetTimer') {
     resetTimer();
@@ -62,7 +68,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       timerType,
       cycleCount 
     });
-  } else if (message.action === 'updateBlockedSites') {
-    updateBlockedSites(message.sites);
   }
 });

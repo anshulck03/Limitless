@@ -5,6 +5,22 @@ const longBreakButton = document.querySelector('#longBreakButton');
 const resetButton = document.querySelector('#resetButton');
 const blockedSitesInput = document.querySelector('#blockedSites');
 
+// Load the blocked sites from storage when the popup is opened
+document.addEventListener('DOMContentLoaded', () => {
+  chrome.storage.local.get(['blockedSites'], function(result) {
+    if (result.blockedSites) {
+      blockedSitesInput.value = result.blockedSites.join('\n');
+    }
+    chrome.runtime.sendMessage({ action: 'getTimerState' });
+  });
+});
+
+// Save the blocked sites to storage when the user changes them
+blockedSitesInput.addEventListener('change', () => {
+  const sitesToBlock = blockedSitesInput.value.split('\n').map(s => s.trim()).filter(Boolean);
+  chrome.storage.local.set({ blockedSites: sitesToBlock });
+});
+
 function updateDisplay(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -12,24 +28,19 @@ function updateDisplay(seconds) {
 }
 
 startButton.addEventListener('click', () => {
-  const sitesToBlock = blockedSitesInput.value.split('\n').map(s => s.trim()).filter(Boolean);
-  chrome.runtime.sendMessage({ action: 'updateBlockedSites', sites: sitesToBlock });
   chrome.runtime.sendMessage({ action: 'startTimer', duration: 1500, type: 'work' });
 });
 
 shortBreakButton.addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'startTimer', duration: 300, type: 'shortBreak' });
-  chrome.runtime.sendMessage({ action: 'updateBlockedSites', sites: [] }); // Unblock sites during break
 });
 
 longBreakButton.addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'startTimer', duration: 900, type: 'longBreak' });
-  chrome.runtime.sendMessage({ action: 'updateBlockedSites', sites: [] }); // Unblock sites during break
 });
 
 resetButton.addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'resetTimer' });
-  chrome.runtime.sendMessage({ action: 'updateBlockedSites', sites: [] }); // Unblock sites on reset
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -42,8 +53,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.action === 'breakComplete') {
     alert("Time to get back to work!");
   }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  chrome.runtime.sendMessage({ action: 'getTimerState' });
 });
