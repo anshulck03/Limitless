@@ -28,11 +28,22 @@
         </label>
         <button id="saveSettings">Save Settings</button>
     </div>
+
+    <div id="goalTracker">
+      <h2>Set Daily Goal</h2>
+      <label>
+        Goal for Completed Sessions:
+        <input type="number" id="goalInput" min="1" value="10">
+      </label>
+      <button id="setGoalButton">Set Goal</button>
+      <p id="goalStatus">Goal not set yet.</p>
+    </div>
     
     <div id="statistics">
         <h2>Today's Progress</h2>
         <p id="completedSessions">Completed Sessions: 0</p>
     </div>
+
 
     <div id="taskList">
         <h2>Tasks</h2>

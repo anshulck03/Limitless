@@ -10,6 +10,9 @@ const completedSessionsElement = document.getElementById('completedSessions');
 const workDurationInput = document.getElementById('workDuration');
 const shortBreakDurationInput = document.getElementById('shortBreakDuration');
 const longBreakDurationInput = document.getElementById('longBreakDuration');
+const goalInput = document.getElementById('goalInput');
+const setGoalButton = document.getElementById('setGoalButton');
+const goalStatusElement = document.getElementById('goalStatus');
 
 function updateDisplay(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -43,6 +46,34 @@ resetButton.addEventListener('click', () => {
     chrome.runtime.sendMessage({ action: 'resetTimer' });
     updateDisplay(1500); // Resets to default 25 minutes
 });
+
+function setGoal() {
+    const goal = parseInt(goalInput.value, 10);
+    const today = new Date().toDateString();
+    chrome.storage.sync.set({ goal, goalDate: today }, function() {
+      updateGoalStatus();
+    });
+}
+
+function updateGoalStatus() {
+    const today = new Date().toDateString();
+    chrome.storage.sync.get(['goal', 'completedSessionsCount', 'goalDate'], function(data) {
+      if (data.goalDate !== today) {
+        // Reset if it's a new day
+        chrome.storage.sync.set({ completedSessionsCount: 0, goalDate: today }, function() {
+          goalStatusElement.textContent = `Goal: 0 / ${data.goal || 0} sessions completed.`;
+        });
+      } else if (data.goal) {
+        const progress = data.completedSessionsCount || 0;
+        goalStatusElement.textContent = `Goal: ${progress} / ${data.goal} sessions completed.`;
+      } else {
+        goalStatusElement.textContent = "Goal not set yet.";
+      }
+    });
+}
+
+setGoalButton.addEventListener('click', setGoal);
+
 
 function loadTasks() {
     chrome.storage.sync.get(['tasks'], (data) => {
@@ -104,6 +135,7 @@ function loadStatistics() {
 document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
     loadStatistics();
+    updateGoalStatus();
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
