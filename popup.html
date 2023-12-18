@@ -11,6 +11,39 @@
     <button id="shortBreakButton">Short Break</button>
     <button id="longBreakButton">Long Break</button>
     <button id="resetButton">Reset</button>
+
+    <div id="settings">
+        <h2>Timer Settings</h2>
+        <label>
+          Work Duration (minutes):
+          <input type="number" id="workDuration" min="1" value="25">
+        </label>
+        <label>
+          Short Break Duration (minutes):
+          <input type="number" id="shortBreakDuration" min="1" value="5">
+        </label>
+        <label>
+          Long Break Duration (minutes):
+          <input type="number" id="longBreakDuration" min="1" value="15">
+        </label>
+        <button id="saveSettings">Save Settings</button>
+    </div>
+    
+    <div id="statistics">
+        <h2>Today's Progress</h2>
+        <p id="completedSessions">Completed Sessions: 0</p>
+    </div>
+
+    <div id="taskList">
+        <h2>Tasks</h2>
+        <ul id="tasks">
+          <!-- Task items will be added here dynamically -->
+        </ul>
+        <input type="text" id="newTaskInput" placeholder="Add a new task" />
+        <button id="addTaskButton">Add Task</button>
+    </div>
+
+     
     
     <script src="popup.js"></script>
 </body>

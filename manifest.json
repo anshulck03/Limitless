@@ -1,22 +1,26 @@
 {
-    "manifest_version": 3,
-    "name": "Limitless",
-    "version": "1.0",
-    "description": "Boost your productivity with Oppenheimer-inspired techniques",
-    "permissions": ["notifications", "storage", "declarativeNetRequest", "declarativeNetRequestFeedback"],
-    "host_permissions": ["*://*/*"],
-    "action": {
-      "default_popup": "popup.html"
-    },
-    "background": {
-      "service_worker": "background.js"
-    },
-    "declarativeNetRequest": {
-      "rule_resources": [{
-        "id": "ruleset_1",
-        "enabled": true,
-        "path": "rules.json"
-      }]
-    }
+  "manifest_version": 3,
+  "name": "Limitless",
+  "version": "1.0",
+  "description": "Boost your productivity and focus with our features to help you feel limitless",
+  "permissions": ["storage", "declarativeNetRequest", "declarativeNetRequestFeedback"],
+  "host_permissions": ["*://*/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "imgs/Limitless.png",
+    "48": "imgs/Limitless.png",
+    "128": "imgs/Limitless.png"
+  },
+  "declarativeNetRequest": {
+    "rule_resources": [{
+      "id": "ruleset_1",
+      "enabled": true,
+      "path": "rules.json"
+    }]
   }
-  
+}
