@@ -1,5 +1,5 @@
 let countdown;
-let timerType = 'work'; // Types: 'work', 'shortBreak', or 'longBreak'
+let timerType = 'work'; 
 let cycleCount = 0;
 let endTime;
 
