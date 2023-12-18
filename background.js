@@ -13,8 +13,16 @@ function startTimer(duration, type) {
       clearInterval(countdown);
       countdown = null;
       cycleCount = timerType === 'work' ? (cycleCount + 1) % 4 : cycleCount;
+
+      if (timerType === 'work') {
+        showNotification('Pomodoro Timer', 'Time for a break!');
+      } else {
+        showNotification('Pomodoro Timer', 'Back to work!');
+      }
+
       chrome.runtime.sendMessage({ 
-        action: timerType === 'work' ? 'pomodoroComplete' : 'breakComplete'
+        action: timerType === 'work' ? 'pomodoroComplete' : 'breakComplete',
+        cycleCount
       });
     }
     chrome.runtime.sendMessage({ action: 'updateTimer', timeLeft });
@@ -25,6 +33,16 @@ function resetTimer() {
   clearInterval(countdown);
   countdown = null;
   chrome.runtime.sendMessage({ action: 'resetTimer' });
+}
+
+function showNotification(title, message) {
+  chrome.notifications.create('', {
+    type: 'basic',
+    iconUrl: 'icon.png', // Replace with your extension's icon path
+    title: title,
+    message: message,
+    priority: 2
+  });
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
