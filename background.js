@@ -38,7 +38,7 @@ function resetTimer() {
 function showNotification(title, message) {
   chrome.notifications.create('', {
     type: 'basic',
-    iconUrl: 'icon.png', // Replace with your extension's icon path
+    iconUrl: 'imgs/Limitless.png', // Replace with your extension's icon path
     title: title,
     message: message,
     priority: 2
