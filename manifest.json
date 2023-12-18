@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "OppenheimerOmega",
+    "name": "Limitless",
     "version": "1.0",
     "description": "Boost your productivity with Oppenheimer-inspired techniques",
     "permissions": ["notifications", "storage", "declarativeNetRequest", "declarativeNetRequestFeedback"],
