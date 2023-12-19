@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Limitless",
+  "version": "1.0",
+  "description": "Boost your productivity with a suite of tools.",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "imgs/Limitless.png",
+    "48": "imgs/Limitless.png",
+    "128": "imgs/Limitless.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
+}

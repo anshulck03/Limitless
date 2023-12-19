@@ -1,0 +1,13 @@
+.app {
+  display: flex;
+}
+
+.dropdown-menu {
+  margin-right: 20px;
+}
+
+.feature-panel {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
